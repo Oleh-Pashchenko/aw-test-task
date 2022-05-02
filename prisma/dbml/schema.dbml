@@ -1,0 +1,25 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table User {
+  id String [pk]
+  email String [unique, not null]
+  password String [not null]
+  name String [not null]
+  wallet String [not null]
+  balance Float [not null]
+  items Item [not null]
+}
+
+Table Item {
+  id String [pk]
+  name String [not null]
+  price Float [not null]
+  amount Int [not null, default: 1]
+  tokenId Int [not null]
+  owner User
+  ownerId String
+}
+
+Ref: Item.ownerId > User.id

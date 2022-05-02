@@ -1,0 +1,33 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["interactiveTransactions"]
+}
+
+generator dbml {
+  provider = "prisma-dbml-generator"
+}
+
+model User {
+  id       String  @id @default(cuid())
+  email    String  @unique
+  password String
+  name     String
+  wallet   String
+  balance  Float
+  items    Item[]
+}
+
+model Item {
+  id        String   @id @default(uuid())
+  name      String
+  price     Float
+  amount    Int @default(1)
+  tokenId   Int
+  owner     User?    @relation(fields: [ownerId], references: [id])
+  ownerId   String?
+}

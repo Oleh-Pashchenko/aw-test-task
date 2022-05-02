@@ -1,0 +1,80 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Auth {
+  accessToken: JWT!
+  refreshToken: JWT!
+  user: User!
+}
+
+input BuyItemInput {
+  amount: Int!
+  id: String!
+}
+
+input CreateItemInput {
+  amount: Int!
+  price: Float!
+  title: String!
+  tokenId: Int!
+}
+
+type Item {
+  amount: Int!
+  id: ID!
+  name: String!
+  owner: User!
+  price: Int!
+  tokenId: Int!
+}
+
+"""
+A field whose value is a JSON Web Token (JWT): https://jwt.io/introduction.
+"""
+scalar JWT
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+type Mutation {
+  buyItem(data: BuyItemInput!): Item!
+  createItem(data: CreateItemInput!): Item!
+  login(data: LoginInput!): Auth!
+  signup(data: SignupInput!): Auth!
+}
+
+type Query {
+  items: [Item!]!
+  me: UserPrivate!
+  time: Int!
+  userItems(userId: String!): [Item!]!
+}
+
+input SignupInput {
+  email: String!
+  name: String!
+  password: String!
+  wallet: String!
+}
+
+type User {
+  address: String!
+  email: String!
+  id: ID!
+  items: [Item!]!
+  name: String!
+  wallet: String!
+}
+
+type UserPrivate {
+  address: String!
+  balance: String!
+  email: String!
+  id: ID!
+  items: [Item!]!
+  name: String!
+  wallet: String!
+}
