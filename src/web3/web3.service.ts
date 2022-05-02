@@ -5,7 +5,7 @@ import { Contract } from 'web3-eth-contract';
 import itemAbi from '../common/abis/item';
 import { TransactionReceipt } from 'web3-core';
 
-const Web3 = require('Web3');
+const Web3 = require('web3');
 
 @Injectable()
 export class Web3Service {
