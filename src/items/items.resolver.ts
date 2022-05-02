@@ -57,7 +57,13 @@ export class ItemsResolver {
   @Mutation(() => Item)
   async buyItem(@UserEntity() user: User, @Args('data') data: BuyItemInput) {
     const item = await this.prisma.item.findUnique({
-      select: { id: true, price: true, owner: true, tokenId: true },
+      select: {
+        id: true,
+        price: true,
+        owner: true,
+        tokenId: true,
+        amount: true,
+      },
       where: {
         id: data.id,
       },
@@ -71,6 +77,12 @@ export class ItemsResolver {
 
     if (item.owner.id === user.id) {
       throw new MethodNotAllowedException("You can't buy from yourself");
+    }
+
+    if (item.amount - data.amount < 0) {
+      throw new MethodNotAllowedException(
+        "You can't buy motre than allowed amount"
+      );
     }
 
     await this.web3Service.setApprovalForAll(item.owner.wallet, user.wallet);
@@ -93,7 +105,15 @@ export class ItemsResolver {
         throw new MethodNotAllowedException('Not enoght balance');
       }
 
-      prisma.user.update({
+      await prisma.item.update({
+        where: { id: item.id },
+        data: {
+          amount: {
+            decrement: data.amount,
+          },
+        },
+      });
+      await prisma.user.update({
         where: { id: item.owner.id },
         data: {
           balance: { increment: itemPrice },

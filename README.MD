@@ -81,7 +81,7 @@ You should see the one item owned by this wallet.
 
 ### Register second user and remember his accesToken:
 
-- Arthas will be buyr of Frostmourne
+- Arthas will be buyer of Frostmourne
 
 ```graphql
 mutation {
