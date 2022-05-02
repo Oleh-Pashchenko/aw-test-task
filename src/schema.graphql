@@ -25,7 +25,7 @@ type Item {
   id: ID!
   name: String!
   owner: User!
-  price: Int!
+  price: Float!
   tokenId: Int!
 }
 

@@ -89,7 +89,7 @@ mutation {
     data: {
       email: "arthas@test.com"
       name: "Arthas"
-      password: "123456"
+      password: "12345678"
       wallet: "0xB77D7Ef48b1891E3C01F52e43D0c32C1432a03CE"
     }
   ) {

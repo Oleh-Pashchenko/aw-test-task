@@ -34,15 +34,6 @@ export class ItemsResolver {
     @UserEntity() user: User,
     @Args('data') data: CreateItemInput
   ) {
-    // await this.web3Service.itemContract.methods
-    //   .mint(
-    //     user.wallet,
-    //     data.tokenId,
-    //     data.amount,
-    //     this.web3Service.toWei(data.price)
-    //   )
-    //   .send({ from: user.wallet });
-
     await this.web3Service.mintItem(
       user.wallet,
       data.tokenId,
@@ -82,9 +73,18 @@ export class ItemsResolver {
       throw new MethodNotAllowedException("You can't buy from yourself");
     }
 
+    await this.web3Service.setApprovalForAll(item.owner.wallet, user.wallet);
+    const value = this.web3Service.toWei(itemPrice);
+    await this.web3Service.buyItem(
+      user.wallet,
+      item.owner.wallet,
+      item.tokenId,
+      data.amount,
+      value
+    );
     // Race-condition preventing
     await this.prisma.$transaction(async (prisma) => {
-      const buyer = await prisma.user.update({
+      const buyer = await this.prisma.user.update({
         where: { id: user.id },
         data: { balance: { decrement: itemPrice } },
       });
@@ -93,25 +93,7 @@ export class ItemsResolver {
         throw new MethodNotAllowedException('Not enoght balance');
       }
 
-      await this.web3Service.setApprovalForAll(item.owner.wallet, buyer.wallet);
-
-      const value = this.web3Service.toWei(itemPrice);
-      await this.web3Service.buyItem(
-        buyer.wallet,
-        item.owner.wallet,
-        item.tokenId,
-        data.amount,
-        value
-      );
-
-      await prisma.item.update({
-        where: { id: item.id },
-        data: {
-          ownerId: item.id,
-        },
-      });
-
-      await prisma.user.update({
+      prisma.user.update({
         where: { id: item.owner.id },
         data: {
           balance: { increment: itemPrice },
